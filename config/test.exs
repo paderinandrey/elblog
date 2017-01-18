@@ -16,6 +16,7 @@ config :elblog, Elblog.Repo,
   password: "postgres",
   database: "elblog_test",
   hostname: "localhost",
+  template: "template0",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :comeonin, bcrypt_log_rounds: 4
