@@ -33,4 +33,12 @@ defmodule Elblog.SessionControllerTest do
     assert get_flash(conn, :error) == "Invalid username/password combination!"
     assert redirected_to(conn) == page_path(conn, :index)
   end
+  
+  test "delete the user session", %{conn: conn} do
+    user = Repo.get_by(User, %{username: "test"})
+    conn = delete conn, session_path(conn, :delete, user)
+    refute get_session(conn, :current_user)
+    assert get_flash(conn, :info) == "Signed out sucessfully!"
+    assert redirected_to(conn) == page_path(conn, :index)
+  end
 end
