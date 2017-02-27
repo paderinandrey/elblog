@@ -4,8 +4,10 @@ defmodule Elblog.Post do
   schema "posts" do
     field :title, :string
     field :body, :string
-
+    
     timestamps()
+    
+    belongs_to :user, Elblog.User
   end
 
   @doc """

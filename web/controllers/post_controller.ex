@@ -1,7 +1,19 @@
 defmodule Elblog.PostController do
   use Elblog.Web, :controller
-
+  
+  plug :assign_user
+  
   alias Elblog.Post
+
+  defp assign_user(conn, _opts) do
+    case conn.params do
+      %{"user_id" => user_id} ->
+        user = Repo.get(Elblog.User, user_id)
+        assign(conn, :user, user)
+      _->
+        conn
+    end
+  end
 
   def index(conn, _params) do
     posts = Repo.all(Post)
@@ -20,7 +32,7 @@ defmodule Elblog.PostController do
       {:ok, _post} ->
         conn
         |> put_flash(:info, "Post created successfully.")
-        |> redirect(to: post_path(conn, :index))
+        |> redirect(to: user_post_path(conn, :index, conn.assigns[:user]))
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -45,7 +57,7 @@ defmodule Elblog.PostController do
       {:ok, post} ->
         conn
         |> put_flash(:info, "Post updated successfully.")
-        |> redirect(to: post_path(conn, :show, post))
+        |> redirect(to: user_post_path(conn, :show, conn.assign[:user], post))
       {:error, changeset} ->
         render(conn, "edit.html", post: post, changeset: changeset)
     end
@@ -60,6 +72,6 @@ defmodule Elblog.PostController do
 
     conn
     |> put_flash(:info, "Post deleted successfully.")
-    |> redirect(to: post_path(conn, :index))
+    |> redirect(to: user_post_path(conn, :index, conn.assigns[:user]))
   end
 end
